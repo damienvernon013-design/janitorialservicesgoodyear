@@ -44,6 +44,7 @@
       <a href="/why-choose-us/">Why Choose Us</a>
       <a href="/insured-and-bonded/">Insured &amp; Bonded</a>
       <a href="/faq/">FAQ</a>
+      <a href="/blog/">Blog</a>
       <a href="/request-a-quote/">Get a Quote</a>
     </div>
   </nav>
@@ -59,30 +60,18 @@
     </div>
     <div class="quote-box">
   <h2>Free Quote — Reply by Next Business Day</h2>
-  <form action="/request-a-quote/" method="post">
+  <form data-lead-teaser action="/request-a-quote/" method="get">
     <div class="form-group">
-      <label for="fname">First Name</label>
-      <input type="text" id="fname" name="first_name" required autocomplete="given-name">
+      <label for="teaser-name">Full Name</label>
+      <input type="text" id="teaser-name" name="name" required autocomplete="name">
     </div>
     <div class="form-group">
-      <label for="lname">Last Name</label>
-      <input type="text" id="lname" name="last_name" required autocomplete="family-name">
+      <label for="teaser-phone">Phone Number</label>
+      <input type="tel" id="teaser-phone" name="phone" required autocomplete="tel">
     </div>
     <div class="form-group">
-      <label for="biz">Business / Facility Name</label>
-      <input type="text" id="biz" name="business" required>
-    </div>
-    <div class="form-group">
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" name="phone" required autocomplete="tel">
-    </div>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" required autocomplete="email">
-    </div>
-    <div class="form-group">
-      <label for="sqft">Approximate Square Footage</label>
-      <select id="sqft" name="sqft">
+      <label for="teaser-sqft">Approximate Square Footage</label>
+      <select id="teaser-sqft" name="sqft">
         <option value="">-- Select --</option>
         <option>Under 2,500 sq ft</option>
         <option>2,500–5,000 sq ft</option>
@@ -91,21 +80,7 @@
         <option>25,000+ sq ft</option>
       </select>
     </div>
-    <div class="form-group">
-      <label for="service">Service Needed</label>
-      <select id="service" name="service">
-        <option value="">-- Select --</option>
-        <option>Nightly Janitorial Service</option>
-        <option>Day Porter &amp; Restroom Service</option>
-        <option>Floor Stripping &amp; Waxing</option>
-        <option>Not sure — need guidance</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="notes">Anything else we should know?</label>
-      <textarea id="notes" name="notes"></textarea>
-    </div>
-    <button type="submit" class="btn-primary">Send My Quote Request</button>
+    <button type="submit" class="btn-primary">Start My Free Quote</button>
     <p class="form-note">No robo-calls. A real person replies by next business day.</p>
   </form>
 </div>
@@ -204,6 +179,7 @@
         <li><a href="/our-process/">Our Process</a></li>
         <li><a href="/pricing/">Pricing</a></li>
         <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/blog/">Blog</a></li>
         <li><a href="/contact/">Contact</a></li>
         <li><a href="/request-a-quote/">Request a Quote</a></li>
       </ul>
@@ -212,6 +188,7 @@
   <div class="footer-bottom">
     <span>Serving Goodyear, Avondale, Litchfield Park, Buckeye, Tolleson, Verrado, Estrella, Glendale &amp; Phoenix, AZ</span>
     <span>&copy; 2024 Goodyear Janitorial Services &bull; <a href="/contact/">Contact</a></span>
+    <span>Built and Maintained by <a href="https://infin8content.com/">Infin8Content</a></span>
   </div>
 </footer>
 <script src="/utm.js" defer></script>

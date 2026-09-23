@@ -1,55 +1,75 @@
 # Handoff — janitorialservicesgoodyear.com
 
-**Status: READY TO LAUNCH**
+**Status: BLOG + WIZARD BUILT — NOT YET LIVE-TESTED**
 
 ## What this is
 
-A 43-page static HTML microsite for a janitorial services company serving Goodyear, AZ and the
-West Valley. No build step, no framework — plain HTML/CSS plus two small vanilla-JS files and one
-Vercel serverless function. Deployed on Vercel, repo already connected.
+A static HTML microsite for a janitorial services company serving Goodyear, AZ and the West
+Valley: 43 core pages plus a new 26-post `/blog/`. No build step, no framework — plain HTML/CSS
+plus a UTM-capture script, a multi-step CRM quote wizard script, and one Vercel serverless
+function. Deployed on Vercel, repo already connected.
 
 ## What was done in this pass
 
-- Removed a stray junk directory at the project root left over from a bad `mkdir` brace-expansion
-  (`{about,contact,...}`) — it was empty, not part of the site.
-- Added `/api/quote.js`, a Vercel serverless function that receives the quote form submission and
-  forwards it to the CRM-QM `push_lead` endpoint server-side. The CRM bearer token is never sent
-  to the browser — it's read from the `CRM_API_TOKEN` environment variable at request time.
-- Wired the form on `/request-a-quote/` to POST to `/api/quote` via `fetch` (see `quote-form.js`).
-  On success it shows an inline confirmation; on failure it tells the visitor to call the phone
-  number instead. The form still degrades to a plain HTML POST if JS fails to load (`action`
-  attribute is left in place, though there is no server-side HTML form handler — see "Known gaps"
-  below).
-- Added `utm.js`, loaded on all 43 pages. It captures `utm_source`, `utm_medium`, `utm_campaign`,
-  `utm_term`, `utm_content`, `gclid`, `fbclid` from the landing URL's query string into
-  `sessionStorage`, so attribution survives navigation to `/request-a-quote/` from any entry page.
-  The quote form reads `utm_source` back out of storage and includes it in the CRM payload.
-- Added `vercel.json` with baseline security headers (nosniff, frame-deny, HSTS, referrer policy).
-- Added `.gitignore` and `.env.example` for local env var hygiene.
-- Confirmed there are no hardcoded secrets, no placeholder/lorem-ipsum content, and no leftover
-  `{{ }}` template tokens anywhere in the tree.
+- Added a 26-post `/blog/` section (25 topics from a shared portfolio content pack, rewritten for
+  Goodyear/West Valley branding and facts, plus one extra walkthrough-process post) and a
+  `/blog/index.html` hub. All posts use `LocalBusiness`-only JSON-LD (no author/byline/date), no
+  fabricated pricing figures (per this site's existing "contact for quote" standard), and softened
+  versions of any named-study citations from the source pack that could not be verified in this
+  session. Three posts that in the source pack were written as direct restaurant/gym/school service
+  claims were reframed as general facility-hygiene guidance, since this site's actual scope
+  (`/services/`) is commercial/industrial/office/medical janitorial only.
+- Added `Blog` to the sitewide nav and footer across all 43 existing pages, and added all 26 post
+  URLs plus the `/blog/` hub to `sitemap.xml` (`changefreq weekly`).
+- **Replaced the old single-step quote form with a full CRM-integrated multi-step quote wizard**:
+  - `assets/js/quote-wizard.js` — the wizard client. Question set, answer IDs, time slots and the
+    43-item industry list are fixed CRM questionnaire schema (`get_lead_faq`), not site-specific —
+    treat this file as a byte-for-byte copy across the portfolio, not something to hand-edit here.
+  - `api/submit-lead.js` — replaces the old `api/quote.js` (deleted). Validates and forwards the
+    wizard's payload to the same CRM `push_lead` endpoint. Per-site values set for this domain:
+    `ZIP_DEFAULT = '85338'`, `ADDRESS_DEFAULT = 'Goodyear, AZ'`,
+    `SITE_SOURCE_TAG = 'Site: janitorialservicesgoodyear.com'`, and the CORS origin set to
+    `https://janitorialservicesgoodyear.com`.
+  - `/request-a-quote/` now renders the wizard scaffold (`data-quote-wizard`,
+    `data-wizard-progress/steps/status/nav/back/next`) instead of the old single-page form.
+  - The home page hero form was converted to a short teaser (name + phone + sqft, GET-submits to
+    `/request-a-quote/`); the wizard's own `prefillFromQuery()` reads `?name=&phone=&sqft=` and
+    prefills step 1 automatically. `/contact/` never had a quote form (just contact info + a link
+    to `/request-a-quote/`), so it needed no change.
+  - Deleted `api/quote.js` and `quote-form.js` — fully superseded by the above. Grepped the whole
+    repo afterward for both filenames and for `data-lead-form`; zero references remain.
+  - Appended a `/* Quote wizard */` CSS block to `styles.css` using the site's existing
+    `--primary`/`--accent` tokens — no new colors introduced.
+- **`ZIP_DEFAULT` (85338) is a real, well-known Goodyear ZIP but has not been explicitly confirmed
+  by the client** — flag this the same way the original town-radius verification was flagged, and
+  confirm before go-live if the CRM uses ZIP for routing decisions.
+- Confirmed no hardcoded secrets, no fabricated dollar figures, and no leftover references to the
+  old form/API anywhere in the tree.
+- Added a "Built and Maintained by Infin8Content" credit line (linked to
+  `https://infin8content.com/`) as the last line in `.footer-bottom` on all 70 pages.
 
 ## Required setup before go-live
 
-1. In the Vercel project dashboard, set the environment variable:
-   - `CRM_API_TOKEN` = the bearer token from the CRM-QM API doc (Production + Preview).
-   Do **not** commit this value anywhere. It is intentionally absent from the repo.
+1. In the Vercel project dashboard, confirm the environment variable `CRM_API_TOKEN` is still set
+   (Production + Preview) — unchanged from before, `api/submit-lead.js` reads the same variable
+   name as the old `api/quote.js` did.
 2. Deploy (repo is already connected to Vercel — a normal `git push` to `main` triggers it).
 
 ## Known gaps / things a future session should look at
 
-- **No testing was done for the CRM integration** (per explicit instruction — "no testing crm").
-  The `/api/quote` function has not been exercised against the live CRM endpoint. First real
-  submission after deploy should be manually verified in the CRM.
-- The form's `action="/request-a-quote/" method="post"` attribute is vestigial — with JS enabled,
-  `quote-form.js` intercepts submit and calls `/api/quote` instead. With JS disabled, the form
-  would POST back to the page itself with no handler and effectively no-op. If no-JS support
-  matters, add a fallback (e.g. a Vercel function bound to that route, or a `<noscript>` notice).
-- The industry ID (`23`) and service→answer_id mapping in `api/quote.js` were inferred from the
-  sample payload in the CRM API doc. **Confirm the real `answer_id` values for the three service
-  options with the CRM/ops team** — they're currently placeholders (`101`–`104`) based on the
-  doc's example structure, not confirmed IDs from the CRM.
-- `zip` is collected nowhere on the current form (the CRM payload expects it) — currently sent as
-  an empty string. Consider adding a ZIP field to the form if the CRM requires it for routing.
+- **No live CRM submission test was performed** (per explicit client instruction — "no testing
+  crm" — carried forward from the original build). Neither the old form nor the new wizard has
+  been exercised against the live CRM endpoint from this session. `node --check` passed on both
+  new JS files as a syntax-safety substitute, but that is not a functional test.
+- **No real-browser click-through of the wizard was done** — this session has no browser or Vercel
+  preview-deploy access. Before this goes live, click through the full wizard end to end on a
+  preview deploy: all question steps, the appointment-slot step (including the same-day
+  90-minute-gap validation), the details step, the review step, and a real test submission
+  verified in the CRM afterward.
+- `ZIP_DEFAULT = '85338'` was chosen as a real, recognizable Goodyear ZIP but is not
+  client-confirmed — verify if the CRM uses it for lead routing.
+- The wizard's industry list and question set are a **snapshot** of the CRM's `get_lead_faq`
+  response, not a live source — re-fetch and update `assets/js/quote-wizard.js` if the CRM's
+  questionnaire schema changes.
 - No `GetFaq` integration — the FAQ page content is static and hand-written; left as-is since it
   reads as intentional, curated content rather than something to swap for a live feed.
