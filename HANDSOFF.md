@@ -1,6 +1,6 @@
 # Handoff — janitorialservicesgoodyear.com
 
-**Status: BLOG + WIZARD BUILT — NOT YET LIVE-TESTED**
+**Status: BLOG + WIZARD BUILT — NOT YET LIVE-TESTED. ALL SITE CTAs NOW POINT EXTERNALLY (see below).**
 
 ## What this is
 
@@ -8,6 +8,17 @@ A static HTML microsite for a janitorial services company serving Goodyear, AZ a
 Valley: 43 core pages plus a new 26-post `/blog/`. No build step, no framework — plain HTML/CSS
 plus a UTM-capture script, a multi-step CRM quote wizard script, and one Vercel serverless
 function. Deployed on Vercel, repo already connected.
+
+## CTA redirect (latest change)
+
+- Every CTA on the site (header, hero, inline, sidebar, footer, blog; 276 links across 70 files) and
+  the home hero teaser form `action` now point to **https://teamleadgeneration.com/contact/**
+  instead of `/request-a-quote/`. The `mailto:ops@thequotemasters.com` footer links are unchanged.
+- As a result the on-site wizard (`/request-a-quote/`, `assets/js/quote-wizard.js`,
+  `api/submit-lead.js`) is **orphaned but still deployed** — nothing links to it. Decide whether to
+  keep, redirect, or remove it. The teaser form still appends `name`/`phone`/`sqft` query params,
+  which the external site likely ignores.
+- New CTAs should use the external URL, not `/request-a-quote/`. Not click-tested in a browser.
 
 ## What was done in this pass
 

@@ -48,3 +48,7 @@ wizard script, one Vercel serverless function. Deployed on Vercel, connected via
   Don't assume it works end-to-end without checking with the user first.
 - Footer includes a "Built and Maintained by Infin8Content" credit line (linked to
   infin8content.com) on every page — keep it in place when editing footer markup.
+- **All CTAs point to `https://teamleadgeneration.com/contact/`** (every "Get a Quote"-style link
+  and the home hero teaser form's `action`) — not to `/request-a-quote/`. Use that URL for any new
+  CTA. The on-site wizard, `assets/js/quote-wizard.js` and `/api/submit-lead.js` remain deployed
+  but are no longer linked from anywhere; don't remove them without asking the user.
